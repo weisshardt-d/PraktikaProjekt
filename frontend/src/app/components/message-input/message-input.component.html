@@ -1,0 +1,4 @@
+<form class="row" (submit)="onSubmit($event)">
+  <input class="input" type="text" placeholder="Nachricht eingeben…" [(ngModel)]="text" name="msg" [disabled]="disabled" />
+  <button class="btn" type="submit" [disabled]="disabled">Senden</button>
+</form>

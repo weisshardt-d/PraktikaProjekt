@@ -1,0 +1,6 @@
+<div class="chat" id="chat">
+  <div *ngFor="let m of messages" class="msg" [class.user]="m.from==='user'" [class.llm]="m.from==='llm'">
+    {{ m.text }}
+  </div>
+  <div *ngIf="loading" class="msg llm">… denkt nach</div>
+</div>
