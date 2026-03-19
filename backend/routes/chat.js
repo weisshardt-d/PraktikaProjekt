@@ -24,23 +24,25 @@ router.get('/api/chat', async (anfrage, antwort) => {
     }
 
     //Aufgabe 2: Ersetze hier den Text durch die Variable "prompt" um der KI deine Frage weiterzugeben :).
-    generiereKIAntwort("@Praktikant: Hier muss der Prompt rein der in der Anfrage angegeben wurde :)", antwort);
+    generiereKIAntwort(prompt, antwort);
 
-    
   } catch (err) {
     console.error(err);
     return antwort.status(500).json({ error: 'Backend error', details: String(err) });
   }
 });
 
+//Hier musst du nichts tun
 router.get('/online', (anfrage, antwort) => {
   antwort.send('Der Server läuft.');
 });
 
+//Hier musst du nichts tun
 router.get('/testKI', (anfrage, antwort) => {
   generiereKIAntwort("Antworte einfach mit den Worten \"Ich bin die KI und kann dir bei deinen Aufgaben helfen!\"", antwort);
 });
 
+//Hier musst du nichts tun
 async function generiereKIAntwort(prompt, antwort) {
   // Sende die Anfrage an Ollama
 
