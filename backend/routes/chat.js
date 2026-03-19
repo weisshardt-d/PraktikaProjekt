@@ -33,7 +33,13 @@ router.get('/api/chat', async (anfrage, antwort) => {
   }
 });
 
+router.get('/online', (anfrage, antwort) => {
+  antwort.send('Der Server läuft.');
+});
 
+router.get('/testKI', (anfrage, antwort) => {
+  generiereKIAntwort("Antworte einfach mit den Worten \"Ich bin die KI und kann dir bei deinen Aufgaben helfen!\"", antwort);
+});
 
 async function generiereKIAntwort(prompt, antwort) {
   // Sende die Anfrage an Ollama
