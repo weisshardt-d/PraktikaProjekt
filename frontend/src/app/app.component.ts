@@ -14,6 +14,9 @@ import { OllamaService } from './services/ollama.service';
     <h1>Chat WGV</h1>
     <div class="card">
       <app-chat-window [messages]="messages()" [loading]="loading()"></app-chat-window>
+      <!-- Aufgabe 4: Verbinde das clear-Event mit der clearMessages() Methode -->
+      <!-- Hinweis: Füge (clear)="clearMessages()" zum app-chat-window hinzu -->
+      
       <app-message-input (send)="onSend($event)" [disabled]="loading()"></app-message-input>
     </div>
   </div>
@@ -27,6 +30,10 @@ export class AppComponent {
 
   constructor(private api: OllamaService) {}
 
+  // Aufgabe 4: Erstelle hier eine clearMessages() Methode
+  // Die Methode soll das messages Signal auf ein leeres Array setzen
+  // Hinweis: Verwende this.messages.set([])
+  
   onSend(text: string) {
     if (!text.trim()) return;
     this.messages.update(m => [...m, { from: 'user', text }]);

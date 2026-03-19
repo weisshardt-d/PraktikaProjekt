@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
 
 export type Message = { from: 'user' | 'llm'; text: string };
 
@@ -13,4 +13,8 @@ export type Message = { from: 'user' | 'llm'; text: string };
 export class ChatWindowComponent {
   @Input() messages: Message[] = [];
   @Input() loading = false;
+  
+  // Aufgabe 4: Erstelle hier einen @Output() für das clear-Event
+  // Hinweis: Verwende EventEmitter<void> da kein Wert übergeben wird
+  // Beispiel: @Output() clear = new EventEmitter<void>();
 }

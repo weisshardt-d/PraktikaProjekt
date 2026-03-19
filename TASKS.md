@@ -101,6 +101,51 @@ Leerzeichen müssen mit %20 ersetzt werden da die URL sonst nicht aufgerufen wer
 ```
 - Teste im Browser: User-Nachrichten sollten jetzt rechts (dunkel) und LLM-Nachrichten links (grün) erscheinen
 
-4. API-Aufruf in `OllamaService.sendMessage(prompt, model)`.
-5. Flow in `AppComponent` verdrahten.
+4. "Chat löschen" Button hinzufügen
+- **Teil 1: @Output Event in der ChatWindowComponent erstellen**
+  - Öffne die Datei `frontend/src/app/components/chat-window/chat-window.component.ts`
+  - Importiere `EventEmitter` und `Output` (steht schon ganz oben in den Imports)
+  - Erstelle einen neuen `@Output()` mit dem Namen `clear`
+  - Der Typ ist `EventEmitter<void>` (void weil kein Wert übergeben wird)
+  - Initialisiere ihn mit `new EventEmitter<void>()`
+  - Beispiel: `@Output() clear = new EventEmitter<void>();`
+
+- **Teil 2: Button im Template erstellen**
+  - Öffne die Datei `frontend/src/app/components/chat-window/chat-window.component.html`
+  - Erstelle nach dem Chat-Div einen `<button>` mit:
+    - CSS-Klassen: `btn` und `small`
+    - Click-Event: `(click)="clear.emit()"`
+    - Text: "Chat löschen"
+  - Beispiel: `<button class="btn small" (click)="clear.emit()">Chat löschen</button>`
+
+- **Teil 3: clearMessages() Methode in AppComponent erstellen**
+  - Öffne die Datei `frontend/src/app/app.component.ts`
+  - Erstelle eine neue Methode `clearMessages()` in der Klasse (unter dem constructor)
+  - Die Methode soll das `messages` Signal auf ein leeres Array setzen
+  - Verwende: `this.messages.set([])`
+  - Beispiel:
+  ```typescript
+  clearMessages() {
+    this.messages.set([]);
+  }
+  ```
+
+- **Teil 4: Event im Template verbinden**
+  - In der gleichen Datei, im `template` String
+  - Füge beim `<app-chat-window>` Tag das Event-Binding hinzu: `(clear)="clearMessages()"`
+  - Die vollständige Zeile: `<app-chat-window [messages]="messages()" [loading]="loading()" (clear)="clearMessages()"></app-chat-window>`
+
+- Teste im Browser: Klicke auf "Chat löschen" - alle Nachrichten sollten verschwinden
+
+5. Zeichenzähler im Eingabefeld anzeigen
+- Öffne die Datei `frontend/src/app/components/message-input/message-input.component.html`
+- Deine Aufgabe: Zeige eine Zeichenanzahl unter dem Eingabefeld an
+- Erstelle ein `<div>` Element nach dem `<form>` mit:
+  - CSS-Klasse: `small` (für kleinere Schrift)
+  - Text: "Zeichen: X/500" wobei X die aktuelle Länge ist
+  - Verwende `{{ text.length }}` um die Anzahl der Zeichen anzuzeigen
+- Beispiel: `<div class="small">Zeichen: {{ text.length }}/500</div>`
+- Optional: Füge beim `<input>` Element das Attribut `maxlength="500"` hinzu um die Eingabe auf 500 Zeichen zu begrenzen
+- Teste im Browser: Tippe etwas ein - der Zähler sollte sich aktualisieren
+
 6. Optional: Styling, Fehleranzeige, Modell-Dropdown.
