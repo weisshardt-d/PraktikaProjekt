@@ -23,8 +23,8 @@ router.get('/api/chat', async (anfrage, antwort) => {
       return antwort.status(400).json({ error: 'Es wurde kein Prompt in der Anfrage angegeben' });
     }
 
-    //Ersetze hier den Text durch die Variable "prompt" um der KI deine Frage weiterzugeben :).
-    generiereOllamaAntwort("@Praktikant: Hier muss der Prompt rein der in der Anfrage angegeben wurde :)", antwort);
+    //Aufgabe 2: Ersetze hier den Text durch die Variable "prompt" um der KI deine Frage weiterzugeben :).
+    generiereKIAntwort("@Praktikant: Hier muss der Prompt rein der in der Anfrage angegeben wurde :)", antwort);
 
     
   } catch (err) {
@@ -35,7 +35,7 @@ router.get('/api/chat', async (anfrage, antwort) => {
 
 
 
-async function generiereOllamaAntwort(prompt, antwort) {
+async function generiereKIAntwort(prompt, antwort) {
   // Sende die Anfrage an Ollama
 
   // Erstelle den Request-Body für Ollama
