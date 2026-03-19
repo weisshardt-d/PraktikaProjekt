@@ -5,6 +5,12 @@
   <!-- Erstelle ein <div> mit class="msg" und zeige m.text darin an -->
   @for (m of messages; track m) {
     <!-- Dein Code hier: <div class="msg">{{ m.text }}</div> -->
+    <!-- Aufgabe 3: Styling mit @if/@else -->
+    @if (m.from === 'user') {
+      <div class="msg user">{{ m.text }}</div>
+    } @else {
+      <div class="msg llm">{{ m.text }}</div>
+    }
   }
   @if (loading) {
     <div class="msg llm">… denkt nach</div>
@@ -16,3 +22,4 @@
 <!-- Verwende: (click)="clear.emit()" -->
 <!-- CSS-Klasse: "btn" und zusätzlich "small" für kleinere Darstellung -->
 <!-- Beispiel: <button class="btn small" (click)="clear.emit()">Chat löschen</button> -->
+<button class="btn small" (click)="clear.emit()">Chat löschen</button>

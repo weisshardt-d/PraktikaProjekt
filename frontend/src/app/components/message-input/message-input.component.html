@@ -11,12 +11,14 @@
   <!--    - name="msg" (benötigt für ngModel) -->
   <!--    - [disabled]="disabled" (deaktiviert während des Ladens) -->
   <!--    📝 Aufgabe 5: Füge maxlength="500" hinzu um die Eingabe zu limitieren -->
+  <input class="input" type="text" placeholder="Nachricht eingeben…" [(ngModel)]="text" name="msg" [disabled]="disabled" maxlength="500" />
   
   <!-- 2. <button> Element mit: -->
   <!--    - type="submit" -->
   <!--    - class="btn" -->
   <!--    - [disabled]="disabled" -->
   <!--    - Text: "Senden" -->
+  <button class="btn" type="submit" [disabled]="disabled">Senden</button>
 </form>
 
 <!-- Aufgabe 5: Erstelle hier einen Zeichenzähler -->
@@ -24,3 +26,4 @@
 <!-- Hinweis: Verwende {{ text.length }} um die Anzahl der Zeichen zu zeigen -->
 <!-- CSS-Klasse: "small" für kleinere Schrift -->
 <!-- Beispiel: <div class="small">Zeichen: {{ text.length }}/500</div> -->
+<div class="small">Zeichen: {{ text.length }}/500</div>
