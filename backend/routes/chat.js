@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/helloWorld', (anfrage, antwort) => {
   //Schreibe hier die Zeile Code, welche die Antwort "Hello World" zurücksendet.
   //Dazu kannst du die funktion "antwort.send("[Hier deine Nachricht]");" nutzen.
-    
+  antwort.send("HelloWorld");
   //Starte den Server neu und teste nun ob du von der Adresse "http://localhost:3000/helloWorld" eine Antwort mit deiner Nachricht bekommst :).
 });
 
