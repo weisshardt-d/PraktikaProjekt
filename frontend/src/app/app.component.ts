@@ -11,7 +11,7 @@ import { OllamaService } from './services/ollama.service';
   providers: [OllamaService],
   template: `
   <div class="container">
-    <h1>Ollama Mini Chat - Gemma 2B</h1>
+    <h1>Chat WGV</h1>
     <div class="card">
       <app-chat-window [messages]="messages()" [loading]="loading()"></app-chat-window>
       <app-message-input (send)="onSend($event)" [disabled]="loading()"></app-message-input>

@@ -54,9 +54,35 @@ Leerzeichen müssen mit %20 ersetzt werden da die URL sonst nicht aufgerufen wer
   - Zeige `m.text` innerhalb des `<div>` an mit der doppelten geschweiften Klammer Syntax: `{{ m.text }}`
   - Beispiel: `<div class="msg">{{ m.text }}</div>`
 - Teste ob es funktioniert indem du die Anwendung im Browser öffnest (`http://localhost:4200`) und prüfst ob Nachrichten angezeigt werden
-- Die Nachrichten sehen noch alle gleich aus - das ändern wir in der nächsten Aufgabe!
+- Die Nachrichten sehen noch alle gleich aus - das ändern wir später!
 
-2. Nachrichten basierend auf Absender unterschiedlich stylen
+2. Eingabefeld und Senden-Button in `MessageInputComponent` erstellen
+- Öffne die Datei `frontend/src/app/components/message-input/message-input.component.html`
+- In dieser Datei findest du ein `<form>` Element mit dem Event `(submit)="onSubmit($event)"`
+- Deine Aufgabe: Erstelle innerhalb des `<form>` Elements ein Eingabefeld und einen Button
+- Das Eingabefeld (`<input>`) soll:
+  - `type="text"` haben
+  - Die CSS-Klasse `input` haben
+  - Den Platzhaltertext "Nachricht eingeben…" anzeigen (`placeholder`)
+  - Mit der Variable `text` verbunden sein mit `[(ngModel)]="text"` (Two-Way Data Binding)
+  - Ein `name="msg"` Attribut haben (wird für ngModel benötigt)
+  - Deaktiviert sein wenn `disabled` true ist: `[disabled]="disabled"`
+- Der Button (`<button>`) soll:
+  - `type="submit"` haben
+  - Die CSS-Klasse `btn` haben
+  - Den Text "Senden" anzeigen
+  - Auch deaktiviert sein wenn `disabled` true ist: `[disabled]="disabled"`
+- Beispiel Struktur:
+```html
+<form class="row" (submit)="onSubmit($event)">
+  <input class="input" type="text" placeholder="..." [(ngModel)]="text" name="msg" [disabled]="disabled" />
+  <button class="btn" type="submit" [disabled]="disabled">Senden</button>
+</form>
+```
+- Teste im Browser: Du solltest jetzt ein Eingabefeld und einen Button sehen
+- Das Senden funktioniert noch nicht - das kommt in einer späteren Aufgabe!
+
+3. Nachrichten basierend auf Absender unterschiedlich stylen
 - Öffne wieder die Datei `frontend/src/app/components/chat-window/chat-window.component.html`
 - Jede Nachricht hat ein Feld `m.from` welches entweder `'user'` oder `'llm'` sein kann
 - Deine Aufgabe: Zeige User-Nachrichten und LLM-Nachrichten mit unterschiedlichen CSS-Klassen an
@@ -75,7 +101,6 @@ Leerzeichen müssen mit %20 ersetzt werden da die URL sonst nicht aufgerufen wer
 ```
 - Teste im Browser: User-Nachrichten sollten jetzt rechts (dunkel) und LLM-Nachrichten links (grün) erscheinen
 
-3. Eingabe & Senden in `MessageInputComponent`.
 4. API-Aufruf in `OllamaService.sendMessage(prompt, model)`.
 5. Flow in `AppComponent` verdrahten.
-5. Optional: Styling, Fehleranzeige, Modell-Dropdown.
+6. Optional: Styling, Fehleranzeige, Modell-Dropdown.

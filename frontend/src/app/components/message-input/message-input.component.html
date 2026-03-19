@@ -1,4 +1,19 @@
+<!-- Aufgabe 2: Erstelle hier ein Eingabefeld und einen Senden-Button -->
+<!-- Hinweis: Verwende ein <form> Element mit (submit)="onSubmit($event)" -->
+<!-- Das Form Element braucht: class="row" -->
 <form class="row" (submit)="onSubmit($event)">
-  <input class="input" type="text" placeholder="Nachricht eingeben…" [(ngModel)]="text" name="msg" [disabled]="disabled" />
-  <button class="btn" type="submit" [disabled]="disabled">Senden</button>
+  <!-- Dein Code hier: -->
+  <!-- 1. <input> Element mit: -->
+  <!--    - type="text" -->
+  <!--    - class="input" -->
+  <!--    - placeholder="Nachricht eingeben…" -->
+  <!--    - [(ngModel)]="text" (Two-Way Data Binding zur 'text' Variable) -->
+  <!--    - name="msg" (benötigt für ngModel) -->
+  <!--    - [disabled]="disabled" (deaktiviert während des Ladens) -->
+  
+  <!-- 2. <button> Element mit: -->
+  <!--    - type="submit" -->
+  <!--    - class="btn" -->
+  <!--    - [disabled]="disabled" -->
+  <!--    - Text: "Senden" -->
 </form>
