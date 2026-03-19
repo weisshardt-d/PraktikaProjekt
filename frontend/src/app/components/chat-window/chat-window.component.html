@@ -1,6 +1,12 @@
 <div class="chat" id="chat">
-  <div *ngFor="let m of messages" class="msg" [class.user]="m.from==='user'" [class.llm]="m.from==='llm'">
-    {{ m.text }}
-  </div>
-  <div *ngIf="loading" class="msg llm">… denkt nach</div>
+  <!-- Aufgabe 1: Zeige hier alle Nachrichten aus dem messages Array an -->
+  <!-- Hinweis: Die @for Schleife iteriert über messages, jede Nachricht heißt 'm' -->
+  <!-- Jede Nachricht (m) hat: m.from ('user' oder 'llm') und m.text (der Text) -->
+  <!-- Erstelle ein <div> mit class="msg" und zeige m.text darin an -->
+  @for (m of messages; track m) {
+    <!-- Dein Code hier: <div class="msg">{{ m.text }}</div> -->
+  }
+  @if (loading) {
+    <div class="msg llm">… denkt nach</div>
+  }
 </div>

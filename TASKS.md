@@ -13,24 +13,24 @@ Nun hast du den Programmcode auf deinem Rechner und kannst ihn bearbeiten.
 2. Projektabhängigkeiten installieren (Web Anwendung)
 - Navigiere mit dem `cd` (Change Directory) Befehl in den Ordner `./Praktikantenkonzept/frontend` und führe den Befehl `npm install` aus.
 - Starte die Webanwendung mit dem Befehl `npm run start`
-- Überprüfe ob die Anwendung im Browser unter `http://localhost:4200` erreichbar ist.
+- Überprüfe, ob die Anwendung im Browser unter `http://localhost:4200` erreichbar ist.
 
 3. Projektabhängigkeiten installieren (Server)
 - Navigiere erneut mit dem `cd` (Change Directory) Befehl in den Ordner `./Praktikantenkonzept/backend` und führe den Befehl `npm install` aus.
 - Starte den Server der Anwendung mit dem Befehl `npm run start`
-- Überprüfe ob der Server im Browser unter `http://localhost:3000/online` erreichbar ist und die Antwort `Der Server läuft.` liefert.
+- Überprüfe, ob der Server im Browser unter `http://localhost:3000/online` erreichbar ist und die Antwort `Der Server läuft.` liefert.
 
 4. Lokale KI starten
 - Navigiere mit dem `cd` (Change Directory) Befehl in den Ordner `./Praktikantenkonzept`
-- Führe den Befehl `docker compose up -d`
-- Führe den Befehl `docker compose exec ollama ollama pull gemma:2b`
+- Führe den Befehl `docker compose up -d` aus
+- Führe den Befehl `docker compose exec ollama ollama pull gemma:2b` aus
 
 Jetzt läuft auf deinem Raspberry PI eine kleines KI Modell welches deine Fragen beantworten kann.
 Super, jetzt sind die Anwendungen startbereit und du kannst die weiteren Aufgaben bearbeiten.
 
 # Aufgaben Server
 1. Ersten eigenen Endpunkt definieren
-- Schreibe die Zeile Code welche in der chat.js Datei dafür sorgt dass der Server unter der URL `http://localhost:3000/helloWorld` mit den Worten "Hello World" antwortet.
+- Schreibe die Zeile Code welche in der chat.js Datei dafür sorgt, dass der Server unter der URL `http://localhost:3000/helloWorld` mit den Worten "Hello World" antwortet.
 
 2. Erste Antwort der KI zu eigener Frage erhalten
 - Modifiziere die Zeile Code in der selben Datei, welche deine Frage an die KI weitergeben soll (Tipps dazu direkt in der Datei).
@@ -43,8 +43,39 @@ Leerzeichen müssen mit %20 ersetzt werden da die URL sonst nicht aufgerufen wer
 
 
 # Web Anwendung
-1. Nachrichtenliste in `ChatWindowComponent` rendern.
-2. Eingabe & Senden in `MessageInputComponent`.
-3. API-Aufruf in `OllamaService.sendMessage(prompt, model)`.
-4. Flow in `AppComponent` verdrahten.
+1. Nachrichtenliste in `ChatWindowComponent` anzeigen
+- Öffne die Datei `frontend/src/app/components/chat-window/chat-window.component.html`
+- In dieser Datei findest du eine `@for` Schleife die über das `messages` Array iteriert
+- Deine Aufgabe: Erstelle innerhalb der `@for` Schleife ein `<div>` Element für jede Nachricht
+- Das `<div>` Element soll:
+  - Die CSS-Klasse `msg` haben
+  - Den Text der Nachricht anzeigen
+- Tipps:
+  - Zeige `m.text` innerhalb des `<div>` an mit der doppelten geschweiften Klammer Syntax: `{{ m.text }}`
+  - Beispiel: `<div class="msg">{{ m.text }}</div>`
+- Teste ob es funktioniert indem du die Anwendung im Browser öffnest (`http://localhost:4200`) und prüfst ob Nachrichten angezeigt werden
+- Die Nachrichten sehen noch alle gleich aus - das ändern wir in der nächsten Aufgabe!
+
+2. Nachrichten basierend auf Absender unterschiedlich stylen
+- Öffne wieder die Datei `frontend/src/app/components/chat-window/chat-window.component.html`
+- Jede Nachricht hat ein Feld `m.from` welches entweder `'user'` oder `'llm'` sein kann
+- Deine Aufgabe: Zeige User-Nachrichten und LLM-Nachrichten mit unterschiedlichen CSS-Klassen an
+- Verwende `@if` und `@else` innerhalb der `@for` Schleife:
+  - Wenn `m.from === 'user'` ist, füge die zusätzliche CSS-Klasse `user` hinzu
+  - Wenn `m.from === 'llm'` ist, füge die zusätzliche CSS-Klasse `llm` hinzu
+- Beispiel Struktur:
+```html
+@for (m of messages; track m) {
+  @if (m.from === 'user') {
+    <div class="msg user">{{ m.text }}</div>
+  } @else {
+    <div class="msg llm">{{ m.text }}</div>
+  }
+}
+```
+- Teste im Browser: User-Nachrichten sollten jetzt rechts (dunkel) und LLM-Nachrichten links (grün) erscheinen
+
+3. Eingabe & Senden in `MessageInputComponent`.
+4. API-Aufruf in `OllamaService.sendMessage(prompt, model)`.
+5. Flow in `AppComponent` verdrahten.
 5. Optional: Styling, Fehleranzeige, Modell-Dropdown.
