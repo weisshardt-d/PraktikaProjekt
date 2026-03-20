@@ -1,40 +1,156 @@
-# Aufgaben (1 Tag) – Gemma 2B
+# Aufgaben (1 Tag) – CodeGemma 2B
 
-Ziel: Chat-UI mit Standardmodell **gemma:2b**.
+Ziel: Chat-UI mit Standardmodell **codegemma:2b** (spezialisiert auf Programmieraufgaben).
 
-# Einrichten
+# Aufgaben Projekt Einrichten
 
 1. Projektdateien runterladen
 Führe diese Schritte aus:
-- Führe den Befehl `git clone https://..` in dem Terminal im Editor (Wird mit STRG + ö geöffnet) aus.
+- Führe den Befehl `git clone https://github.com/weisshardt-d/PraktikaProjekt.git` in dem Terminal im Editor (Wird mit STRG + ö geöffnet) aus.
 
 Nun hast du den Programmcode auf deinem Rechner und kannst ihn bearbeiten.
 
 2. Projektabhängigkeiten installieren (Web Anwendung)
 - Navigiere mit dem `cd` (Change Directory) Befehl in den Ordner `./Praktikantenkonzept/frontend` und führe den Befehl `npm install` aus.
 - Starte die Webanwendung mit dem Befehl `npm run start`
-- Überprüfe ob die Anwendung im Browser unter `http://localhost:4200` erreichbar ist.
+- Überprüfe, ob die Anwendung im Browser unter `http://localhost:4200` erreichbar ist.
 
 3. Projektabhängigkeiten installieren (Server)
 - Navigiere erneut mit dem `cd` (Change Directory) Befehl in den Ordner `./Praktikantenkonzept/backend` und führe den Befehl `npm install` aus.
 - Starte den Server der Anwendung mit dem Befehl `npm run start`
-- Überprüfe ob der Server im Browser unter `http://localhost:4200` erreichbar ist und die Antwort `Der Server läuft.` liefert.
+- Überprüfe, ob der Server im Browser unter `http://localhost:3000/online` erreichbar ist und die Antwort `Der Server läuft.` liefert.
 
 4. Lokale KI starten
 - Navigiere mit dem `cd` (Change Directory) Befehl in den Ordner `./Praktikantenkonzept`
-- Führe den Befehl `docker compose up -d`
-- Führe den Befehl `docker compose exec ollama ollama pull gemma:2b`
+- Führe den Befehl `docker compose up -d` aus
+- Führe den Befehl `docker compose exec ollama ollama pull codegemma:2b` aus
 
-Jetzt läuft auf deinem Raspberry PI eine kleines KI Modell welches deine Fragen beantworten kann.
+**Optional - Für bessere Code-Qualität (benötigt 16 GB RAM):**
+Falls dein Raspberry Pi 16 GB RAM hat und du bessere Antworten für komplexe Programmieraufgaben möchtest, kannst du stattdessen das größere Modell verwenden:
+- `docker compose exec ollama ollama pull codegemma:7b`
+- Ändere dann in der Datei `backend/config.js` die Zeile `DEFAULT_MODEL` zu `'codegemma:7b'`
+
+Jetzt läuft auf deinem Raspberry PI eine spezialisierte Code-KI, die dir bei Programmieraufgaben und Oracle APEX Entwicklung helfen kann.
 Super, jetzt sind die Anwendungen startbereit und du kannst die weiteren Aufgaben bearbeiten.
 
-# Server
-1. Schreibe die Zeile Code welche in der chat.js Datei dafür sorgt dass der Server mit den Worten "Hello World" antwortet.
-2. Modifiziere die Funktion, welche deine Frage/Nachricht an die KI weiterleitet und die Antwort der KI zurückgibt.
+# Aufgaben Server
+1. Ersten eigenen Endpunkt definieren
+- Schreibe die Zeile Code welche in der chat.js Datei dafür sorgt, dass der Server unter der URL `http://localhost:3000/helloWorld` mit den Worten "Hello World" antwortet.
+
+2. Erste Antwort der KI zu eigener Frage erhalten
+- Modifiziere die Zeile Code in der selben Datei, welche deine Frage an die KI weitergeben soll (Tipps dazu direkt in der Datei).
+- Teste nun über die URL `http://localhost:3000/api/chat?prompt=[Hier deine Frage]` ob die Ki dir antwortet. Hierzu musst du die URL z.B. so bearbeiten `http://localhost:3000/api/chat?prompt=Wie%20ist%20dein%20Name`.
+Leerzeichen müssen mit %20 ersetzt werden da die URL sonst nicht aufgerufen werden kann.
+
+
+
+
+
 
 # Web Anwendung
-1. Nachrichtenliste in `ChatWindowComponent` rendern.
-2. Eingabe & Senden in `MessageInputComponent`.
-3. API-Aufruf in `OllamaService.sendMessage(prompt, model)`.
-4. Flow in `AppComponent` verdrahten.
-5. Optional: Styling, Fehleranzeige, Modell-Dropdown.
+1. Nachrichtenliste in `ChatWindowComponent` anzeigen
+- Öffne die Datei `frontend/src/app/components/chat-window/chat-window.component.html`
+- In dieser Datei findest du eine `@for` Schleife die über das `messages` Array iteriert
+- Deine Aufgabe: Erstelle innerhalb der `@for` Schleife ein `<div>` Element für jede Nachricht
+- Das `<div>` Element soll:
+  - Die CSS-Klasse `msg` haben
+  - Den Text der Nachricht anzeigen
+- Tipps:
+  - Zeige `m.text` innerhalb des `<div>` an mit der doppelten geschweiften Klammer Syntax: `{{ m.text }}`
+  - Beispiel: `<div class="msg">{{ m.text }}</div>`
+- Teste ob es funktioniert indem du die Anwendung im Browser öffnest (`http://localhost:4200`) und prüfst ob Nachrichten angezeigt werden
+- Die Nachrichten sehen noch alle gleich aus - das ändern wir später!
+
+2. Eingabefeld und Senden-Button in `MessageInputComponent` erstellen
+- Öffne die Datei `frontend/src/app/components/message-input/message-input.component.html`
+- In dieser Datei findest du ein `<form>` Element mit dem Event `(submit)="onSubmit($event)"`
+- Deine Aufgabe: Erstelle innerhalb des `<form>` Elements ein Eingabefeld und einen Button
+- Das Eingabefeld (`<input>`) soll:
+  - `type="text"` haben
+  - Die CSS-Klasse `input` haben
+  - Den Platzhaltertext "Nachricht eingeben…" anzeigen (`placeholder`)
+  - Mit der Variable `text` verbunden sein mit `[(ngModel)]="text"` (Two-Way Data Binding)
+  - Ein `name="msg"` Attribut haben (wird für ngModel benötigt)
+  - Deaktiviert sein wenn `disabled` true ist: `[disabled]="disabled"`
+- Der Button (`<button>`) soll:
+  - `type="submit"` haben
+  - Die CSS-Klasse `btn` haben
+  - Den Text "Senden" anzeigen
+  - Auch deaktiviert sein wenn `disabled` true ist: `[disabled]="disabled"`
+- Beispiel Struktur:
+```html
+<form class="row" (submit)="onSubmit($event)">
+  <input class="input" type="text" placeholder="..." [(ngModel)]="text" name="msg" [disabled]="disabled" />
+  <button class="btn" type="submit" [disabled]="disabled">Senden</button>
+</form>
+```
+- Teste im Browser: Du solltest jetzt ein Eingabefeld und einen Button sehen
+- Das Senden funktioniert noch nicht - das kommt in einer späteren Aufgabe!
+
+3. Nachrichten basierend auf Absender unterschiedlich stylen
+- Öffne wieder die Datei `frontend/src/app/components/chat-window/chat-window.component.html`
+- Jede Nachricht hat ein Feld `m.from` welches entweder `'user'` oder `'llm'` sein kann
+- Deine Aufgabe: Zeige User-Nachrichten und LLM-Nachrichten mit unterschiedlichen CSS-Klassen an
+- Verwende `@if` und `@else` innerhalb der `@for` Schleife:
+  - Wenn `m.from === 'user'` ist, füge die zusätzliche CSS-Klasse `user` hinzu
+  - Wenn `m.from === 'llm'` ist, füge die zusätzliche CSS-Klasse `llm` hinzu
+- Beispiel Struktur:
+```html
+@for (m of messages; track m) {
+  @if (m.from === 'user') {
+    <div class="msg user">{{ m.text }}</div>
+  } @else {
+    <div class="msg llm">{{ m.text }}</div>
+  }
+}
+```
+- Teste im Browser: User-Nachrichten sollten jetzt rechts (dunkel) und LLM-Nachrichten links (grün) erscheinen
+
+4. "Chat löschen" Button hinzufügen
+- **Teil 1: @Output Event in der ChatWindowComponent erstellen**
+  - Öffne die Datei `frontend/src/app/components/chat-window/chat-window.component.ts`
+  - Importiere `EventEmitter` und `Output` (steht schon ganz oben in den Imports)
+  - Erstelle einen neuen `@Output()` mit dem Namen `clear`
+  - Der Typ ist `EventEmitter<void>` (void weil kein Wert übergeben wird)
+  - Initialisiere ihn mit `new EventEmitter<void>()`
+  - Beispiel: `@Output() clear = new EventEmitter<void>();`
+
+- **Teil 2: Button im Template erstellen**
+  - Öffne die Datei `frontend/src/app/components/chat-window/chat-window.component.html`
+  - Erstelle nach dem Chat-Div einen `<button>` mit:
+    - CSS-Klassen: `btn` und `small`
+    - Click-Event: `(click)="clear.emit()"`
+    - Text: "Chat löschen"
+  - Beispiel: `<button class="btn small" (click)="clear.emit()">Chat löschen</button>`
+
+- **Teil 3: clearMessages() Methode in AppComponent erstellen**
+  - Öffne die Datei `frontend/src/app/app.component.ts`
+  - Erstelle eine neue Methode `clearMessages()` in der Klasse (unter dem constructor)
+  - Die Methode soll das `messages` Signal auf ein leeres Array setzen
+  - Verwende: `this.messages.set([])`
+  - Beispiel:
+  ```typescript
+  clearMessages() {
+    this.messages.set([]);
+  }
+  ```
+
+- **Teil 4: Event im Template verbinden**
+  - In der gleichen Datei, im `template` String
+  - Füge beim `<app-chat-window>` Tag das Event-Binding hinzu: `(clear)="clearMessages()"`
+  - Die vollständige Zeile: `<app-chat-window [messages]="messages()" [loading]="loading()" (clear)="clearMessages()"></app-chat-window>`
+
+- Teste im Browser: Klicke auf "Chat löschen" - alle Nachrichten sollten verschwinden
+
+5. Zeichenzähler im Eingabefeld anzeigen
+- Öffne die Datei `frontend/src/app/components/message-input/message-input.component.html`
+- Deine Aufgabe: Zeige eine Zeichenanzahl unter dem Eingabefeld an
+- Erstelle ein `<div>` Element nach dem `<form>` mit:
+  - CSS-Klasse: `small` (für kleinere Schrift)
+  - Text: "Zeichen: X/500" wobei X die aktuelle Länge ist
+  - Verwende `{{ text.length }}` um die Anzahl der Zeichen anzuzeigen
+- Beispiel: `<div class="small">Zeichen: {{ text.length }}/500</div>`
+- Optional: Füge beim `<input>` Element das Attribut `maxlength="500"` hinzu um die Eingabe auf 500 Zeichen zu begrenzen
+- Teste im Browser: Tippe etwas ein - der Zähler sollte sich aktualisieren
+
+6. Optional: Styling, Fehleranzeige, Modell-Dropdown.
