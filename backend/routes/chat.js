@@ -50,7 +50,9 @@ async function generiereKIAntwort(prompt, antwort) {
   const body = {
     model: config.DEFAULT_MODEL,
     prompt,
-    stream: false
+    stream: false,
+    // System-Kontext wird unsichtbar hinzugefügt
+    system: config.SYSTEM_CONTEXT
   };
 
   const resp = await fetch(`${config.OLLAMA_URL}/api/generate`, {
