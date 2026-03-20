@@ -23,12 +23,12 @@ Nun hast du den Programmcode auf deinem Rechner und kannst ihn bearbeiten.
 4. Lokale KI starten
 - Navigiere mit dem `cd` (Change Directory) Befehl in den Ordner `./Praktikantenkonzept`
 - Führe den Befehl `docker compose up -d` aus
-- Führe den Befehl `docker compose exec ollama ollama pull codegemma:2b` aus
+- Führe den Befehl `docker compose exec ollama ollama pull gemma2:2b` aus
 
 **Optional - Für bessere Code-Qualität (benötigt 16 GB RAM):**
 Falls dein Raspberry Pi 16 GB RAM hat und du bessere Antworten für komplexe Programmieraufgaben möchtest, kannst du stattdessen das größere Modell verwenden:
-- `docker compose exec ollama ollama pull codegemma:7b`
-- Ändere dann in der Datei `backend/config.js` die Zeile `DEFAULT_MODEL` zu `'codegemma:7b'`
+- `docker compose exec ollama ollama pull qwen2.5-coder:3b`
+- Ändere dann in der Datei `backend/config.js` die Zeile `DEFAULT_MODEL` zu `'qwen2.5-coder:3b'`
 
 Jetzt läuft auf deinem Raspberry PI eine spezialisierte Code-KI, die dir bei Programmieraufgaben und Oracle APEX Entwicklung helfen kann.
 Super, jetzt sind die Anwendungen startbereit und du kannst die weiteren Aufgaben bearbeiten.
@@ -153,4 +153,255 @@ Leerzeichen müssen mit %20 ersetzt werden da die URL sonst nicht aufgerufen wer
 - Optional: Füge beim `<input>` Element das Attribut `maxlength="500"` hinzu um die Eingabe auf 500 Zeichen zu begrenzen
 - Teste im Browser: Tippe etwas ein - der Zähler sollte sich aktualisieren
 
-6. Optional: Styling, Fehleranzeige, Modell-Dropdown.
+# Aufgaben für Fortgeschrittene (Teil 3) - Markdown-Formatierung
+
+**Für wen ist dieser Teil?** Diese Aufgaben sind für fitte Praktikanten gedacht, die die Basis-Aufgaben bereits abgeschlossen haben und die KI-Antworten professionell formatiert darstellen möchten.
+
+**Was ist das Problem?** CodeGemma antwortet oft mit Markdown-Formatierung:
+- `**fett**` für wichtige Begriffe
+- `*kursiv*` für Hinweise
+- ` ```sql ... ``` ` für Code-Blöcke
+
+Aktuell werden diese Sternchen und Backticks einfach als Text angezeigt. Das sieht unprofessionell aus und macht Code-Beispiele schwer lesbar.
+
+**Was ist das Ziel?** Markdown-Formatierung soll korrekt angezeigt werden:
+- **Fetter Text** wird fett
+- *Kursiver Text* wird kursiv
+- Code-Blöcke erscheinen in einem grauen Kasten mit Monospace-Schrift
+
+---
+
+## Aufgabe 1: Markdown-Library installieren
+
+Die Library `marked` konvertiert Markdown-Text in HTML.
+
+**Schritte:**
+1. Öffne ein neues Terminal (STRG + ö)
+2. Navigiere in den Frontend-Ordner: `cd frontend`
+3. Installiere die Library: `npm install marked`
+4. Installiere TypeScript-Typen: `npm install --save-dev @types/marked`
+5. Warte bis die Installation abgeschlossen ist (ca. 1-2 Minuten)
+
+**Überprüfung:** 
+- Öffne die Datei `frontend/package.json`
+- Unter `"dependencies"` sollte jetzt `"marked"` stehen
+- Unter `"devDependencies"` sollte `"@types/marked"` stehen
+
+---
+
+## Aufgabe 2: renderMarkdown() Methode in ChatWindowComponent erstellen
+
+Jetzt implementieren wir eine Methode, die Markdown-Text in sicheres HTML umwandelt.
+
+**Teil 1: Imports hinzufügen**
+- Öffne die Datei `frontend/src/app/components/chat-window/chat-window.component.ts`
+- Füge ganz oben bei den anderen Imports hinzu:
+```typescript
+import { marked } from 'marked';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+```
+
+**Teil 2: DomSanitizer im Constructor injizieren**
+- Der Constructor sieht momentan wahrscheinlich so aus:
+```typescript
+constructor() {}
+```
+- Ändere ihn zu:
+```typescript
+constructor(private sanitizer: DomSanitizer) {}
+```
+- **Warum?** DomSanitizer schützt vor XSS-Angriffen (Cross-Site-Scripting). Wenn jemand böswilligen HTML-Code eingibt, wird dieser neutralisiert.
+
+**Teil 3: renderMarkdown() Methode erstellen**
+- Füge nach dem Constructor diese neue Methode hinzu:
+```typescript
+renderMarkdown(text: string): SafeHtml {
+  // Konfiguriere marked für mehr Sicherheit
+  marked.setOptions({
+    breaks: true,  // Zeilenumbrüche werden zu <br>
+    gfm: true      // GitHub Flavored Markdown aktivieren
+  });
+  
+  // Konvertiere Markdown zu HTML
+  const html = marked(text);
+  
+  // Sanitize HTML um XSS-Angriffe zu verhindern
+  return this.sanitizer.sanitize(1, html) || '';
+}
+```
+
+**Erklärung:**
+- `marked(text)` konvertiert Markdown wie `**fett**` in HTML wie `<strong>fett</strong>`
+- `sanitizer.sanitize()` entfernt gefährliche HTML-Tags wie `<script>`
+- `SafeHtml` ist der Rückgabetyp für sicheres HTML
+
+**Tipp:** Falls TypeScript-Fehler erscheinen, stelle sicher dass alle Imports korrekt sind!
+
+---
+
+## Aufgabe 3: Template anpassen für HTML-Rendering
+
+Jetzt ändern wir das Template, damit LLM-Antworten als formatiertes HTML angezeigt werden.
+
+**Schritte:**
+1. Öffne die Datei `frontend/src/app/components/chat-window/chat-window.component.html`
+2. Suche die Zeile mit `<div class="msg llm">{{ m.text }}</div>`
+3. Ändere **nur die LLM-Nachricht** zu:
+```html
+<div class="msg llm" [innerHTML]="renderMarkdown(m.text)"></div>
+```
+4. Die User-Nachricht bleibt unverändert: `<div class="msg user">{{ m.text }}</div>`
+
+**Wichtig:** 
+- `[innerHTML]` rendert HTML statt reinen Text
+- Wir verwenden es nur für LLM-Nachrichten, da diese vertrauenswürdig sind
+- User-Nachrichten bleiben plain text aus Sicherheitsgründen
+
+**Gesamte @for Schleife sollte jetzt so aussehen:**
+```html
+@for (m of messages; track m) {
+  @if (m.from === 'user') {
+    <div class="msg user">{{ m.text }}</div>
+  } @else {
+    <div class="msg llm" [innerHTML]="renderMarkdown(m.text)"></div>
+  }
+}
+```
+
+**Teste im Browser:**
+- Stelle eine Frage an die KI: "Erkläre mir was **SQL** ist"
+- Die KI-Antwort sollte jetzt "SQL" fett darstellen (falls die KI ** ** verwendet)
+- Probiere auch: "Zeige mir ein SQL SELECT Beispiel"
+- Code-Blöcke sollten jetzt in einem separaten Block erscheinen
+
+---
+
+## Aufgabe 4: CSS für Markdown-Elemente hinzufügen
+
+Damit Markdown-Elemente schön aussehen, fügen wir CSS hinzu.
+
+**Schritte:**
+1. Öffne die Datei `frontend/src/app/components/chat-window/chat-window.component.css`
+2. Füge am Ende folgendes CSS hinzu:
+
+```css
+/* Styling für Markdown in LLM-Nachrichten */
+.msg.llm strong {
+  font-weight: 700;
+  color: #1a3a1a;
+}
+
+.msg.llm em {
+  font-style: italic;
+  color: #2d5a2d;
+}
+
+.msg.llm code {
+  background-color: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+  color: #d63384;
+}
+
+.msg.llm pre {
+  background-color: #2d2d2d;
+  color: #f8f8f2;
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 8px 0;
+}
+
+.msg.llm pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+  font-size: 0.95em;
+}
+
+.msg.llm ul, .msg.llm ol {
+  margin-left: 20px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.msg.llm li {
+  margin-bottom: 4px;
+}
+
+.msg.llm p {
+  margin: 8px 0;
+}
+
+.msg.llm h1, .msg.llm h2, .msg.llm h3 {
+  margin-top: 12px;
+  margin-bottom: 8px;
+  color: #1a3a1a;
+}
+```
+
+**Erklärung:**
+- `strong` = Fetter Text (aus `**text**`)
+- `em` = Kursiver Text (aus `*text*`)
+- `code` = Inline-Code (aus `` `code` ``)
+- `pre` = Code-Blöcke (aus ` ```code``` `)
+- `ul/ol/li` = Listen
+- `h1/h2/h3` = Überschriften
+
+---
+
+## Aufgabe 5: Testen und Debugging
+
+**Test 1: Fett und Kursiv**
+- Frage: "Erkläre mir was ein **JOIN** in SQL ist"
+- Erwartung: "JOIN" sollte fett dargestellt werden
+- Falls nicht: Prüfe ob die KI tatsächlich `** **` in der Antwort verwendet
+
+**Test 2: Code-Block**
+- Frage: "Zeige mir ein SQL SELECT Beispiel"
+- Erwartung: Der Code sollte in einem dunklen Kasten mit Monospace-Schrift erscheinen
+- Falls nicht: Prüfe ob die KI ` ``` ` für Code-Blöcke verwendet
+
+**Test 3: Inline-Code**
+- Frage: "Was macht die SELECT-Anweisung?"
+- Erwartung: Wenn die KI `` `SELECT` `` schreibt, sollte es mit grauem Hintergrund erscheinen
+
+**Test 4: Sicherheit (wichtig!)**
+- Gib in deine eigene Nachricht ein: `<script>alert('Test')</script>`
+- Erwartung: Es sollte KEIN Alert-Fenster erscheinen
+- Der Text sollte nur als normaler Text in deiner Nachricht erscheinen
+- **Warum?** DomSanitizer schützt vor XSS-Angriffen
+
+**Test 5: Listen**
+- Frage: "Nenne mir 3 SQL Befehle"
+- Erwartung: Falls die KI eine Liste mit `-` oder `1.` erstellt, sollte sie formatiert erscheinen
+
+**Häufige Probleme:**
+
+| Problem | Lösung |
+|---------|--------|
+| `Cannot find module 'marked'` | `npm install marked` im frontend Ordner ausführen |
+| TypeScript-Fehler bei `marked` | `npm install --save-dev @types/marked` ausführen |
+| Markdown wird nicht gerendert | Prüfe ob `[innerHTML]` statt `{{ }}` verwendet wird |
+| Alle Nachrichten verschwinden | Prüfe Browser-Konsole (F12) auf Fehler |
+| Sternchen werden immer noch angezeigt | KI verwendet evtl. kein Markdown - teste mit einer anderen Frage |
+
+---
+
+## 🎉 Geschafft!
+
+Du hast erfolgreich Markdown-Rendering implementiert! Die KI-Antworten sehen jetzt professionell aus.
+
+**Was du gelernt hast:**
+✅ npm-Pakete installieren und einbinden  
+✅ Externe Libraries in Angular verwenden  
+✅ Sicherheit mit DomSanitizer (XSS-Schutz)  
+✅ HTML-Rendering mit `[innerHTML]`  
+✅ CSS für dynamische Inhalte  
+
+**Nächste Schritte:**
+- Teste verschiedene Programmierfragen an die KI
+- Experimentiere mit komplexeren SQL-Queries
+- Stelle Fragen zu Oracle APEX und schaue wie die Code-Beispiele formatiert werden

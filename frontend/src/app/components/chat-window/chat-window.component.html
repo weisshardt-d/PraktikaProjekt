@@ -9,7 +9,7 @@
     @if (m.from === 'user') {
       <div class="msg user">{{ m.text }}</div>
     } @else {
-      <div class="msg llm">{{ m.text }}</div>
+      <div class="msg llm" [innerHTML]="renderMarkdown(m.text)"></div>
     }
   }
   @if (loading) {

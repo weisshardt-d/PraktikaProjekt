@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { marked } from 'marked';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 export type Message = { from: 'user' | 'llm'; text: string };
 
@@ -18,4 +20,20 @@ export class ChatWindowComponent {
   // Hinweis: Verwende EventEmitter<void> da kein Wert übergeben wird
   // Beispiel: @Output() clear = new EventEmitter<void>();
   @Output() clear = new EventEmitter<void>();
+
+  constructor(private sanitizer: DomSanitizer) {}
+
+  renderMarkdown(text: string): SafeHtml {
+    // Konfiguriere marked für mehr Sicherheit
+    marked.setOptions({
+      breaks: true,  // Zeilenumbrüche werden zu <br>
+      gfm: true      // GitHub Flavored Markdown aktivieren
+    });
+    
+    // Konvertiere Markdown zu HTML
+    const html = marked(text);
+    
+    // Sanitize HTML um XSS-Angriffe zu verhindern
+    return this.sanitizer.sanitize(1, html) || '';
+  }
 }
