@@ -1,12 +1,12 @@
-# Aufgaben (1 Tag) – Gemma 2B
+# Aufgaben (1 Tag) – CodeGemma 2B
 
-Ziel: Chat-UI mit Standardmodell **gemma:2b**.
+Ziel: Chat-UI mit Standardmodell **codegemma:2b** (spezialisiert auf Programmieraufgaben).
 
 # Aufgaben Projekt Einrichten
 
 1. Projektdateien runterladen
 Führe diese Schritte aus:
-- Führe den Befehl `git clone https://..` in dem Terminal im Editor (Wird mit STRG + ö geöffnet) aus.
+- Führe den Befehl `git clone https://github.com/weisshardt-d/PraktikaProjekt.git` in dem Terminal im Editor (Wird mit STRG + ö geöffnet) aus.
 
 Nun hast du den Programmcode auf deinem Rechner und kannst ihn bearbeiten.
 
@@ -23,9 +23,14 @@ Nun hast du den Programmcode auf deinem Rechner und kannst ihn bearbeiten.
 4. Lokale KI starten
 - Navigiere mit dem `cd` (Change Directory) Befehl in den Ordner `./Praktikantenkonzept`
 - Führe den Befehl `docker compose up -d` aus
-- Führe den Befehl `docker compose exec ollama ollama pull gemma:2b` aus
+- Führe den Befehl `docker compose exec ollama ollama pull codegemma:2b` aus
 
-Jetzt läuft auf deinem Raspberry PI eine kleines KI Modell welches deine Fragen beantworten kann.
+**Optional - Für bessere Code-Qualität (benötigt 16 GB RAM):**
+Falls dein Raspberry Pi 16 GB RAM hat und du bessere Antworten für komplexe Programmieraufgaben möchtest, kannst du stattdessen das größere Modell verwenden:
+- `docker compose exec ollama ollama pull codegemma:7b`
+- Ändere dann in der Datei `backend/config.js` die Zeile `DEFAULT_MODEL` zu `'codegemma:7b'`
+
+Jetzt läuft auf deinem Raspberry PI eine spezialisierte Code-KI, die dir bei Programmieraufgaben und Oracle APEX Entwicklung helfen kann.
 Super, jetzt sind die Anwendungen startbereit und du kannst die weiteren Aufgaben bearbeiten.
 
 # Aufgaben Server
@@ -101,6 +106,51 @@ Leerzeichen müssen mit %20 ersetzt werden da die URL sonst nicht aufgerufen wer
 ```
 - Teste im Browser: User-Nachrichten sollten jetzt rechts (dunkel) und LLM-Nachrichten links (grün) erscheinen
 
-4. API-Aufruf in `OllamaService.sendMessage(prompt, model)`.
-5. Flow in `AppComponent` verdrahten.
+4. "Chat löschen" Button hinzufügen
+- **Teil 1: @Output Event in der ChatWindowComponent erstellen**
+  - Öffne die Datei `frontend/src/app/components/chat-window/chat-window.component.ts`
+  - Importiere `EventEmitter` und `Output` (steht schon ganz oben in den Imports)
+  - Erstelle einen neuen `@Output()` mit dem Namen `clear`
+  - Der Typ ist `EventEmitter<void>` (void weil kein Wert übergeben wird)
+  - Initialisiere ihn mit `new EventEmitter<void>()`
+  - Beispiel: `@Output() clear = new EventEmitter<void>();`
+
+- **Teil 2: Button im Template erstellen**
+  - Öffne die Datei `frontend/src/app/components/chat-window/chat-window.component.html`
+  - Erstelle nach dem Chat-Div einen `<button>` mit:
+    - CSS-Klassen: `btn` und `small`
+    - Click-Event: `(click)="clear.emit()"`
+    - Text: "Chat löschen"
+  - Beispiel: `<button class="btn small" (click)="clear.emit()">Chat löschen</button>`
+
+- **Teil 3: clearMessages() Methode in AppComponent erstellen**
+  - Öffne die Datei `frontend/src/app/app.component.ts`
+  - Erstelle eine neue Methode `clearMessages()` in der Klasse (unter dem constructor)
+  - Die Methode soll das `messages` Signal auf ein leeres Array setzen
+  - Verwende: `this.messages.set([])`
+  - Beispiel:
+  ```typescript
+  clearMessages() {
+    this.messages.set([]);
+  }
+  ```
+
+- **Teil 4: Event im Template verbinden**
+  - In der gleichen Datei, im `template` String
+  - Füge beim `<app-chat-window>` Tag das Event-Binding hinzu: `(clear)="clearMessages()"`
+  - Die vollständige Zeile: `<app-chat-window [messages]="messages()" [loading]="loading()" (clear)="clearMessages()"></app-chat-window>`
+
+- Teste im Browser: Klicke auf "Chat löschen" - alle Nachrichten sollten verschwinden
+
+5. Zeichenzähler im Eingabefeld anzeigen
+- Öffne die Datei `frontend/src/app/components/message-input/message-input.component.html`
+- Deine Aufgabe: Zeige eine Zeichenanzahl unter dem Eingabefeld an
+- Erstelle ein `<div>` Element nach dem `<form>` mit:
+  - CSS-Klasse: `small` (für kleinere Schrift)
+  - Text: "Zeichen: X/500" wobei X die aktuelle Länge ist
+  - Verwende `{{ text.length }}` um die Anzahl der Zeichen anzuzeigen
+- Beispiel: `<div class="small">Zeichen: {{ text.length }}/500</div>`
+- Optional: Füge beim `<input>` Element das Attribut `maxlength="500"` hinzu um die Eingabe auf 500 Zeichen zu begrenzen
+- Teste im Browser: Tippe etwas ein - der Zähler sollte sich aktualisieren
+
 6. Optional: Styling, Fehleranzeige, Modell-Dropdown.
