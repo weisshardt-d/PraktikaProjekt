@@ -1,12 +1,12 @@
-# Aufgaben (1 Tag) – Gemma 2B
+# Aufgaben (1 Tag) – CodeGemma 2B
 
-Ziel: Chat-UI mit Standardmodell **gemma:2b**.
+Ziel: Chat-UI mit Standardmodell **codegemma:2b** (spezialisiert auf Programmieraufgaben).
 
 # Aufgaben Projekt Einrichten
 
 1. Projektdateien runterladen
 Führe diese Schritte aus:
-- Führe den Befehl `git clone https://..` in dem Terminal im Editor (Wird mit STRG + ö geöffnet) aus.
+- Führe den Befehl `git clone https://github.com/weisshardt-d/PraktikaProjekt.git` in dem Terminal im Editor (Wird mit STRG + ö geöffnet) aus.
 
 Nun hast du den Programmcode auf deinem Rechner und kannst ihn bearbeiten.
 
@@ -23,9 +23,14 @@ Nun hast du den Programmcode auf deinem Rechner und kannst ihn bearbeiten.
 4. Lokale KI starten
 - Navigiere mit dem `cd` (Change Directory) Befehl in den Ordner `./Praktikantenkonzept`
 - Führe den Befehl `docker compose up -d` aus
-- Führe den Befehl `docker compose exec ollama ollama pull gemma:2b` aus
+- Führe den Befehl `docker compose exec ollama ollama pull codegemma:2b` aus
 
-Jetzt läuft auf deinem Raspberry PI eine kleines KI Modell welches deine Fragen beantworten kann.
+**Optional - Für bessere Code-Qualität (benötigt 16 GB RAM):**
+Falls dein Raspberry Pi 16 GB RAM hat und du bessere Antworten für komplexe Programmieraufgaben möchtest, kannst du stattdessen das größere Modell verwenden:
+- `docker compose exec ollama ollama pull codegemma:7b`
+- Ändere dann in der Datei `backend/config.js` die Zeile `DEFAULT_MODEL` zu `'codegemma:7b'`
+
+Jetzt läuft auf deinem Raspberry PI eine spezialisierte Code-KI, die dir bei Programmieraufgaben und Oracle APEX Entwicklung helfen kann.
 Super, jetzt sind die Anwendungen startbereit und du kannst die weiteren Aufgaben bearbeiten.
 
 # Aufgaben Server
