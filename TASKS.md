@@ -1,6 +1,6 @@
-# Aufgaben (1 Tag) – CodeGemma 2B
+# Aufgaben (1 Tag) – Gemma2 2B
 
-Ziel: Chat-UI mit Standardmodell **codegemma:2b** (spezialisiert auf Programmieraufgaben).
+Ziel: Chat-UI mit Standardmodell **gemma2:2b** (spezialisiert auf Programmieraufgaben).
 
 # Aufgaben Projekt Einrichten
 
@@ -21,6 +21,7 @@ Nun hast du den Programmcode auf deinem Rechner und kannst ihn bearbeiten.
 - Überprüfe, ob der Server im Browser unter `http://localhost:3000/online` erreichbar ist und die Antwort `Der Server läuft.` liefert.
 
 4. Lokale KI starten
+- Docker Desktop öffnen
 - Navigiere mit dem `cd` (Change Directory) Befehl in den Ordner `./Praktikantenkonzept`
 - Führe den Befehl `docker compose up -d` aus
 - Führe den Befehl `docker compose exec ollama ollama pull gemma2:2b` aus

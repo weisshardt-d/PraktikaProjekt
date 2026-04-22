@@ -1,3 +1,10 @@
+# TODO: Verbesserungen
+- Tasks sollten immer den Endstand als ausklappbaren bereich haben um zu validieren ob es korrekt ist.
+- Kommentare im Code waren eher verwirrend. Entweder in den Aufgaben besser beschreiben oder weglassen
+- Typescript Aufgaben eher weglassen, wechsel zwischen Dateien ist tendenziell verwirrend.
+- Tasks.md ist nicht überall gleich
+- Server Aufgabe 1 Branch beinhaltet schon die Lösung für Webaufgaben -> Wechsel auf anderen Branch ist zwingend notwenig.
+
 # Mini-Chat UI für Ollama – **CodeGemma 2B** Default (Angular + Express)
 
 Dieses Repo ist die CodeGemma-2B-Variante des 1‑Tages‑Praktikumsprojekts. Standardmodell ist **`codegemma:2b`**, spezialisiert auf Programmieraufgaben und optimiert für Raspberry Pi 5 mit 8–16 GB RAM.
